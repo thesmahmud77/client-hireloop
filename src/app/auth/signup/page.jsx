@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { EyeSlash } from "@gravity-ui/icons";
 import { Eye } from "@gravity-ui/icons";
+import { signIn, signUp } from "@/lib/auth-client";
 
 const SignUpPage = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -23,17 +24,26 @@ const SignUpPage = () => {
     );
     const imgbbData = await imgbbRes.json();
     const photoURL = imgbbData.data.url;
-    const userData = {
-      name: data.name,
-      email: data.email,
-      gender: data.gender,
-      password: data.password,
-      photo: photoURL, // database এ URL save হবে, file না
-    };
+    try {
+      const { data: authData, error } = await signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        image: photoURL, // Better Auth এ photo field "image"
+      });
 
-    console.log(userData);
-    setLoading(false); // ✅ শেষে loading off
-    reset(); // ✅ form reset
+      if (error) {
+        alert(error.message); // Better Auth এর error message
+      } else {
+        alert("Account Created Successfully!");
+        reset();
+      }
+    } catch (err) {
+      alert("Something went wrong!");
+      console.error(err);
+    } finally {
+      setLoading(false); // error হোক বা না হোক, loading বন্ধ
+    }
   };
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md my-10 text-center mb-10">
