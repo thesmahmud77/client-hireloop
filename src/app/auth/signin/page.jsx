@@ -3,20 +3,38 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { EyeSlash } from "@gravity-ui/icons";
 import { Eye } from "@gravity-ui/icons";
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 
 const Signin = () => {
   const { register, handleSubmit, reset } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    // console.log(data);
+    setLoading(true);
+    try {
+      const { data: authData, error } = await signIn.email({
+        email: data.email,
+        password: data.password,
+        callbackURL: "/",
+      });
+      if (error) {
+        alert(error.message);
+      } else {
+        alert("Account Created Successfully");
+      }
+    } catch (err) {
+      alert("Something went wrong!");
+      console.error(err);
+    } finally {
+      setLoading(false); // error হোক বা না হোক, loading বন্ধ
+    }
   };
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md my-10 text-center mb-10">
-      <h2 className="text-xl font-bold text-center">Register A Accounts</h2>
-      <p>Create your accounts for further </p>
+      <h2 className="text-xl font-bold text-center">Login In Accounts</h2>
+      <p>Login your accounts for further </p>
 
       <form
         onSubmit={handleSubmit(onSubmit)}

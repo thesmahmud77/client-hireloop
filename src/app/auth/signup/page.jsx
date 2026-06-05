@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { EyeSlash } from "@gravity-ui/icons";
 import { Eye } from "@gravity-ui/icons";
-import { signIn, signUp } from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 
 const SignUpPage = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -29,7 +29,9 @@ const SignUpPage = () => {
         name: data.name,
         email: data.email,
         password: data.password,
-        image: photoURL, // Better Auth এ photo field "image"
+        image: photoURL,
+        role: data.role,
+        callbackURL: "/",
       });
 
       if (error) {
@@ -54,7 +56,7 @@ const SignUpPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-4 mt-10"
       >
-        {/* First Name Input */}
+        {/* Name Input */}
         <div className="flex flex-col gap-1 text-start">
           <label className="text-sm font-medium text-gray-700">Your Name</label>
           <input
@@ -76,13 +78,14 @@ const SignUpPage = () => {
             className="border p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-600"
           />
         </div>
-        {/* Password Input */}
+        {/* Gender Input */}
         <div className="flex flex-col gap-1  text-start">
           <label className="text-sm font-medium text-gray-700">
             Enter Your Genter
           </label>
           <select
             {...register("gender")}
+            defaultValue={"male"}
             className="border p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-600"
           >
             <option value="female">female</option>
@@ -123,6 +126,24 @@ const SignUpPage = () => {
             {...register("photo", { required: true })}
             className="border p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-600 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-amber-600 file:text-white file:cursor-pointer"
           />
+        </div>
+
+        {/* Role */}
+        <div className="flex flex-col gap-1  text-start">
+          <label className="text-sm font-medium text-gray-700">
+            Enter Your Role
+          </label>
+          <select
+            {...register("role")}
+            defaultValue={"seeker"}
+            className="border p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-600"
+          >
+            <option value="seeker">Seeker</option>
+            <option value="recruiter">Recruiter</option>
+            <option value="admin" disabled className="text-gray-500">
+              Admin
+            </option>
+          </select>
         </div>
 
         {/* Submit Button */}

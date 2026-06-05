@@ -1,9 +1,20 @@
 "use client";
+import { useSession, signOut } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { data: session, isPending } = useSession();
+
+  console.log("session", session);
+  // console.log("isPending", isPending);
+  const user = session?.user;
+
+  const handleLogOut = async () => {
+    console.log("handle CLick");
+    await signOut();
+  };
 
   return (
     <div>
@@ -56,12 +67,22 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="col-span-3 flex items-center justify-end gap-5">
-          <Link href={"/auth/signup"} className={"text-black font-bold"}>
-            Get Started
-          </Link>
-          <Link href={"/auth/signin"} className={"text-black font-bold"}>
-            SignIn
-          </Link>
+          {user ? (
+            <div className="col-span-3 flex items-center justify-end gap-5">
+              <button onClick={handleLogOut} className="bg-red-600 px-5 py-2">
+                SignOut
+              </button>
+            </div>
+          ) : (
+            <div className="col-span-3 flex items-center justify-end gap-5">
+              <Link href={"/auth/signup"} className={"text-black font-bold"}>
+                Get Started
+              </Link>
+              <Link href={"/auth/signin"} className={"text-black font-bold"}>
+                SignIn
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
